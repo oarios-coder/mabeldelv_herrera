@@ -1,0 +1,22 @@
+{
+  "name": "mabel-herrera-landing",
+  "version": "1.0.0",
+  "description": "Landing page premium para la autora Mabel Herrera",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "landing",
+    "mabel-herrera",
+    "gaia",
+    "energias-renovables"
+  ],
+  "author": "Mabel Herrera",
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}
