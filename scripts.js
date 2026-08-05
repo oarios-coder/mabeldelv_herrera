@@ -244,21 +244,41 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Simulate sending API request
+      // Disable button and show loading state
       submitBtn.disabled = true;
       submitBtn.textContent = 'Enviando...';
       formStatus.style.display = 'none';
 
-      setTimeout(() => {
-        // Success response
+      // Send form data via AJAX to FormSubmit
+      const formData = new FormData(contactForm);
+      
+      fetch('https://formsubmit.co/ajax/contacto@mabeldelvherrera.com', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json'
+        },
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Enviar consulta';
         
-        formStatus.textContent = '¡Gracias por tu mensaje! Nos pondremos en contacto contigo a la brevedad.';
-        formStatus.className = 'form-status success';
-        
-        contactForm.reset(); // Clear inputs
-      }, 1500);
+        if (data.success === 'true' || data.success === true) {
+          formStatus.textContent = '¡Gracias por tu mensaje! Tu consulta ha sido enviada con éxito.';
+          formStatus.className = 'form-status success';
+          contactForm.reset(); // Clear inputs
+        } else {
+          formStatus.textContent = 'Hubo un inconveniente al enviar. Por favor, intenta de nuevo o comunícate vía WhatsApp.';
+          formStatus.className = 'form-status error';
+        }
+      })
+      .catch(error => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Enviar consulta';
+        formStatus.textContent = 'Ocurrió un error de conexión. Por favor, intenta de nuevo o contáctanos por WhatsApp.';
+        formStatus.className = 'form-status error';
+      });
     });
   }
 
