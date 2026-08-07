@@ -241,44 +241,42 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!isFormValid) {
         formStatus.textContent = 'Por favor, completa los campos requeridos correctamente.';
         formStatus.className = 'form-status error';
+        formStatus.style.display = 'block';
         return;
       }
 
-      // Disable button and show loading state
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Enviando...';
-      formStatus.style.display = 'none';
+      // Get values from form
+      const firstName = document.getElementById('firstName').value.trim();
+      const lastName = document.getElementById('lastName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim() || 'No proporcionado';
+      const city = document.getElementById('city').value.trim();
+      const message = document.getElementById('message').value.trim();
 
-      // Send form data via AJAX to FormSubmit
-      const formData = new FormData(contactForm);
-      
-      fetch('https://formsubmit.co/ajax/contacto@mabeldelvherrera.com', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json'
-        },
-        body: formData
-      })
-      .then(response => response.json())
-      .then(data => {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Enviar consulta';
-        
-        if (data.success === 'true' || data.success === true) {
-          formStatus.textContent = '¡Gracias por tu mensaje! Tu consulta ha sido enviada con éxito.';
-          formStatus.className = 'form-status success';
-          contactForm.reset(); // Clear inputs
-        } else {
-          formStatus.textContent = 'Hubo un inconveniente al enviar. Por favor, intenta de nuevo o comunícate vía WhatsApp.';
-          formStatus.className = 'form-status error';
-        }
-      })
-      .catch(error => {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Enviar consulta';
-        formStatus.textContent = 'Ocurrió un error de conexión. Por favor, intenta de nuevo o contáctanos por WhatsApp.';
-        formStatus.className = 'form-status error';
-      });
+      // Construct WhatsApp message
+      const text = `Hola Mabel, quiero realizar una consulta desde la Landing Page:\n\n` +
+                   `*Nombre:* ${firstName} ${lastName}\n` +
+                   `*Email:* ${email}\n` +
+                   `*Teléfono:* ${phone}\n` +
+                   `*Ciudad:* ${city}\n\n` +
+                   `*Mensaje:* ${message}`;
+
+      const encodedText = encodeURIComponent(text);
+      const whatsappUrl = `https://wa.me/5492974141785?text=${encodedText}`;
+
+      // Show success message and redirect
+      formStatus.textContent = 'Redirigiendo a WhatsApp...';
+      formStatus.className = 'form-status success';
+      formStatus.style.display = 'block';
+
+      // Open WhatsApp in new tab
+      window.open(whatsappUrl, '_blank');
+
+      // Reset form after redirection
+      setTimeout(() => {
+        contactForm.reset();
+        formStatus.style.display = 'none';
+      }, 2000);
     });
   }
 
